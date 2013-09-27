@@ -6,3 +6,4 @@ gemspec
 gem 'cucumber'
 gem 'rake'
 gem 'aruba'
+gem 'rspec'
