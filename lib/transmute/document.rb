@@ -1,9 +1,9 @@
-require 'nokogiri'
+require_relative 'node'
 
 module Transmute
   class Document
     def self.from_path(path)
-      new(Nokogiri::HTML(File.read(path)))
+      new(Node.from_path(path))
     end
 
     def initialize(node)

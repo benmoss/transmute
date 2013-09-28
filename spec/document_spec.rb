@@ -5,17 +5,24 @@ include Transmute
 describe Document do
   describe "#transform" do
     it "applies a transformation to the subnodes that match the selector" do
-      html = Nokogiri::HTML.parse(File.read("spec/fixtures/sample.html"))
-      document = Document.new(html)
+      document = Document.from_path("spec/fixtures/sample.html")
       document.transform("body") { |node| node.content = "sup" }.
         to_html.delete("\n").should =~ /sup/
     end
 
     it "is immutable" do
-      html = Nokogiri::HTML.parse(File.read("spec/fixtures/sample.html"))
-      document = Document.new(html)
+      document = Document.from_path("spec/fixtures/sample.html")
       document.transform("body") { |node| node.content = "sup" }
       document.to_html.should =~ /hi/
+    end
+
+    it "is chainable" do
+      document = Document.from_path("spec/fixtures/sample.html")
+      document.
+        transform("body") { |node| node.content = "sup" }.
+        transform("body") { |node| node.content = "dude" }.
+        to_html.should =~ /dude/
+
     end
   end
 end
