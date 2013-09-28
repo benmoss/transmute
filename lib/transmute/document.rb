@@ -6,24 +6,24 @@ module Transmute
       new(Node.from_path(path))
     end
 
-    def initialize(node)
+    def initialize(node, *transforms)
       self.node = node
+      self.transforms = transforms
     end
 
     def to_html
-      node.to_html
+      dup = node.dup
+      transforms.each do |selector, transform|
+        dup.css(selector).each(&transform)
+      end
+      dup.to_html
     end
 
-    def transform(selector)
-      dup = node.dup
-      dup.css(selector).each do |node|
-        yield node
-      end
-
-      self.class.new(dup)
+    def transform(selector, &block)
+      self.class.new(node, *transforms, [selector, block])
     end
 
     private
-    attr_accessor :node
+    attr_accessor :node, :transforms
   end
 end
